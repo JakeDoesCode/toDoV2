@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Development</title>
+    <script src="main.js" defer></script>
+    <link rel="stylesheet" href="/src/style.css"/>
+    <link
+    href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    rel="stylesheet"
+  />
+</head>
+<body> 
+  <header class="header">
+    <div class="hideSidebar"> <span class="material-icons md-44"> menu_open </span></div>
+    <div class="appName">   <img
+      class="logoIcon"
+      src="/src/assets/checked.png"
+      alt="checkbox"
+    /><span>GetIt</span>Done</div>
+    <div class="themeSelect">
+      <label class="mode" for="checkbox">
+        <input type="checkbox" id="checkbox" />
+        <div class="slider">
+          <span class="material-icons" id="sun"> light_mode </span>
+          <span class="material-icons" id="moon"> dark_mode </span>
+        </div>
+  </header>
+  <div id="container">
+    <div id="leftSide">
+      <div id="project">
+        <h2>Projects</h2>
+        <div id="addProjectBtn" class="item">
+          <img
+            class="icon"
+            src="/src/assets/addition.png"
+            alt="checklist"
+          />Add Project
+        </div>
+      
+       
+        <form id="projectForm" class="item hidden">
+            <div class="inputBox">
+              <input type="text" id="projectInput" placeholder="Enter Project Name" maxlength="20" required>
+              <div class="projectBtns">
+                <input type="submit" class="projectAddBtn" value="Add">
+                <input type="button" class="projectCancel" value="Cancel">
+              </div>
+            </div>
+          </form>   
+        </div>
+        
+      </div>
+      
+      <div id="toDo">
+     
+        <ul id="toDoList"> 
+        </ul>   <div id="newTaskContainer">
+         
+      <div id="taskForm" class="hidden">
+        <form class="inputForm">
+        <label>Title:</label>
+        <input class="taskNameInput" type="text" placeholder="What task are you going to crush?">
+        <label>Details:</label>
+        <textarea class="taskNotes" type="text" placeholder="How are you going to do that?" wrap="hard"></textarea>
+        <label>Date:</label>
+        <input class="taskDate" type="date">
+        <div class="formBtn">
+          <input class="submitTaskBtn" type="submit" value="Add">
+          <input class="taskCancel" type="button" value="Cancel">
+        </div>
+      </form>
+    </div>
+  </div>
+      <div id="addTask"> <div class="addTaskBtn hidden"><img src="/src/assets/add.png" class="icon" alt="add Task">Add Task</div></div>
+    </div>
+    
+</body>
+</html>
