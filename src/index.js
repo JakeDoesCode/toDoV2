@@ -475,7 +475,7 @@ const selectHomeTile = (event) => {
     event.classList.remove('selected');
   } else {
     event.classList.add('selected');
-    showAddTask.classList.add('hidden');
+    showAddTask.classList.add('hidden')
   }
 };
 displayProject(projectList);
