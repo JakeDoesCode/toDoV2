@@ -1,3 +1,6 @@
+import { addDays, format, isEqual, isWithinInterval } from 'date-fns';
+import parseISO from 'date-fns/parseISO';
+// import { projectList, newProjectCard } from "./modules/addProject";
 let lastSelected;
 // creates empty array for "Project" Objects
 
@@ -28,13 +31,16 @@ function newProjectCard(dataProject, projectName) {
   let projectCard = document.createElement('div');
 
   projectCard.classList.add('projectCard');
+  projectCard.classList.add('item');
   projectCard.setAttribute('data-project', `${dataProject}`);
-  let container = document.getElementById('container');
-  let title = document.createElement('div');
-  title.classList.add('title');
-  title.textContent = projectName;
-  projectCard.appendChild(title);
-  container.appendChild(projectCard);
+  let leftSide = document.getElementById('leftSide')
+  // let title = document.createElement('span');
+  // title.classList.add('title');
+  // title.textContent = projectName;
+  // projectCard.appendChild(title);
+  leftSide.appendChild(projectCard);
+  projectCard.classList.add('title');
+  projectCard.textContent= projectName
   projectCard.addEventListener('click', (event) => {
     selectTile(event.target);
   });
@@ -49,14 +55,17 @@ function newProjectCard(dataProject, projectName) {
   //make a required input box
   renameBtn.addEventListener('click', (e) => {
     let newName = prompt('Please enter new project name:');
-    e.preventDefault();
+    
     if (newName !== '') {
-      title.textContent = ' ';
-      title.textContent = newName;
+      projectCard.textContent = ' ';
+      projectCard.textContent = newName;
       projectList[dataProject].name = newName;
+      projectCard.appendChild(projectBtns)
     } else if (newName === ' ') {
-      title.textContent = projectName;
+      projectCard.textContent = projectName;
     }
+    e.preventDefault();
+    saveToLocalStorage();
   });
 
   let deleteProjectBtn = document.createElement('button');
@@ -133,6 +142,7 @@ function sortArray() {
   projectList.sort((a, b) => a.dataProject - b.dataProject);
   saveToLocalStorage();
 }
+
 //Create a "Project" Object with name, data project number to match index, and taskList
 
 //make task list an array of task objects
@@ -158,7 +168,7 @@ const CreateTask = (
   };
 };
 
-//creates new task in Dom
+// creates new task in Dom
 function newTaskCard(listId, title, notes, date, completed, important) {
   const toDoList = document.getElementById('toDoList');
   const taskCard = document.createElement('li');
@@ -170,7 +180,9 @@ function newTaskCard(listId, title, notes, date, completed, important) {
 
   const taskComplete = document.createElement('div');
   if (completed) {
-    taskComplete.classList.add('complete');
+    taskComplete.classList.add('active');
+  }else{
+    taskComplete.classList.remove('active')
   }
   taskComplete.classList.add('taskComplete');
   taskComplete.addEventListener('click', (e) => {
@@ -178,6 +190,7 @@ function newTaskCard(listId, title, notes, date, completed, important) {
     let selectedTask = findSelectedTask(listId);
     selectedTask.completed = !selectedTask.completed;
     saveToLocalStorage();
+    refreshDisplay(selectedTask.dataProject);
   });
   taskCard.appendChild(taskComplete);
 
@@ -186,7 +199,7 @@ function newTaskCard(listId, title, notes, date, completed, important) {
   taskCard.appendChild(info);
 
   const taskName = document.createElement('div');
-  taskName.classList.add('name');
+  taskName.classList.add('taskName');
   taskName.textContent = title;
   info.appendChild(taskName);
 
@@ -200,8 +213,10 @@ function newTaskCard(listId, title, notes, date, completed, important) {
   dueDate.textContent = date;
   taskCard.appendChild(dueDate);
 
-  const importantBtn = document.createElement('div');
+  const importantBtn = document.createElement('img');
   importantBtn.setAttribute('id', 'important');
+  importantBtn.classList.add('icon');
+  importantBtn.setAttribute('src', '/src/assets/warning.png')
   importantBtn.addEventListener('click', (e) => {
     let listId = e.target.closest('li').id;
     let selectedTask = findSelectedTask(listId);
@@ -222,11 +237,12 @@ function newTaskCard(listId, title, notes, date, completed, important) {
   editBtn.classList.add('taskMenuBtn');
   options.appendChild(editBtn);
   editBtn.addEventListener('click', (e) => {
-    let task = e.target.closest('li');
+    let task = e.target.closest('li')
     populateForm(e);
     task.classList.add('hidden');
     let taskEditForm = document.querySelector('.editForm');
     taskEditForm.classList.toggle('hidden');
+    
   });
 
   const deleteBtn = document.createElement('button');
@@ -247,7 +263,7 @@ function newTaskCard(listId, title, notes, date, completed, important) {
   });
 }
 
-//find the task via id
+// find the task via id
 function findSelectedTask(listId) {
   let selectedTask = projectList.reduce((acc, project) => {
     let currentTask = project.taskList.find((task) => task.id == listId);
@@ -320,11 +336,19 @@ let showAddTask = document.querySelector('.addTaskBtn');
 showAddTask.addEventListener('click', () => {
   const taskForm = document.getElementById('taskForm');
   taskForm.classList.toggle('hidden');
+  showAddTask.classList.add('hidden')
 });
 let addTaskBtn = document.querySelector('.submitTaskBtn');
 addTaskBtn.addEventListener('click', (e) => {
   processListInput(e);
+  showAddTask.classList.remove('hidden');
 });
+let cancelTaskBtn= document.querySelector('.taskCancel')
+cancelTaskBtn.addEventListener('click', () => {
+  const taskForm = document.getElementById('taskForm');
+  taskForm.classList.toggle('hidden');
+  showAddTask.classList.remove('hidden')
+})
 
 const selectTile = (event) => {
   if (lastSelected) {
@@ -336,6 +360,7 @@ const selectTile = (event) => {
   } else {
     event.classList.add('selected');
     displayTask(findCurrentDataProject());
+    showAddTask.classList.remove('hidden')
   }
 };
 displayProject(projectList);
@@ -347,13 +372,6 @@ function findHiddenTask() {
   const hiddenTask = document.querySelector('li.hidden');
   return hiddenTask;
 }
-function updateCompletedTask(e) {
-  let listId = e.target.closest('li').id;
-  let selectedTask = findSelectedTask(listId);
-  selectedTask.completed = !selectedTask.completed;
-  saveToLocalStorage();
-}
-
 function createEditTask() {
   const main = document.getElementById('toDo');
   let editForm = document.createElement('form');
@@ -391,8 +409,9 @@ function createEditTask() {
   submitEdit.setAttribute('type', 'submit');
   submitEdit.setAttribute('value', 'Edit');
   buttons.appendChild(submitEdit);
+
+  //process the input from the edit task form
   submitEdit.addEventListener('click', (e) => {
-    //process the input from the edit task form
     let title = document.querySelector('#editTaskName').value;
     let details = document.querySelector('#editTaskDetails').value;
     let dateInput = document.querySelector('#editDate').value;
@@ -427,9 +446,10 @@ function createEditTask() {
 createEditTask();
 
 function populateForm(e) {
-  let listNode = e.target.closest('li');
+  console.log(e.target.closest('li'))
+  let listNode = e.target.closest('li')
   const editForm = document.querySelector('.editForm');
-  const taskTitle = listNode.querySelector('.name').textContent;
+  const taskTitle = listNode.querySelector('.taskName').textContent;
   const taskDetails = listNode.querySelector('.details').textContent;
   const taskDate = listNode.querySelector('.dueDate').textContent;
 
@@ -447,5 +467,24 @@ function refreshDisplay(dataProject) {
     displayTask(dataProject);
   }
 }
+// mode select
 
-//ability to mark important/complete
+function modeSelect() {
+  const toggleSwitch = document.querySelector('.mode input[type="checkbox"]');
+
+  function switchTheme(e) {
+    if (e.target.checked) {
+      document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+      document.documentElement.removeAttribute('data-theme', 'light');
+    }
+  }
+  toggleSwitch.addEventListener('change', switchTheme, false);
+}
+const sidebarHide = document.querySelector('.hideSidebar');
+const leftSide = document.getElementById('leftSide');
+sidebarHide.addEventListener('click', () => {
+  leftSide.classList.toggle('hidden');
+});
+
+modeSelect();
