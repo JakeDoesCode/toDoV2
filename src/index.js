@@ -33,7 +33,7 @@ function createHome() {
   allTask.classList.add('item');
   let allTaskImg = document.createElement('img');
   allTaskImg.classList.add('icon');
-  allTaskImg.setAttribute('src', '/src/assets/completed-task.png');
+  allTaskImg.setAttribute('src', '/dist/assets/completed-task.png');
   allTask.appendChild(allTaskImg);
   let allTaskName = document.createElement('span');
   allTaskName.textContent = 'All Tasks';
@@ -61,7 +61,7 @@ function createHome() {
   today.classList.add('item');
   let todayImg = document.createElement('img');
   todayImg.classList.add('icon');
-  todayImg.setAttribute('src', '/src/assets/clock.png');
+  todayImg.setAttribute('src', '/dist/assets/clock.png');
   today.appendChild(todayImg);
   let todayName = document.createElement('span');
   todayName.textContent = 'Today';
@@ -95,7 +95,7 @@ function createHome() {
   important.classList.add('item');
   let importantImg = document.createElement('img');
   importantImg.classList.add('icon');
-  importantImg.setAttribute('src', '/src/assets/warning.png');
+  importantImg.setAttribute('src', '/dist/assets/warning.png');
   important.appendChild(importantImg);
   let importantName = document.createElement('span');
   importantName.textContent = 'Important';
@@ -319,7 +319,7 @@ function newTaskCard(listId, title, notes, date, completed, important) {
   const importantBtn = document.createElement('img');
   importantBtn.setAttribute('id', 'important');
   importantBtn.classList.add('icon');
-  importantBtn.setAttribute('src', '/src/assets/warning.png');
+  importantBtn.setAttribute('src', '/dist/assets/warning.png');
   importantBtn.addEventListener('click', (e) => {
     let listId = e.target.closest('li').id;
     let selectedTask = findSelectedTask(listId);
